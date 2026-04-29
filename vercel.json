@@ -1,14 +1,11 @@
 {
-  "functions": {
-    "api/[...slug].js": {
-      "memory": 512,
-      "maxDuration": 10
-    }
-  },
   "routes": [
     {
       "src": "/(.*)",
-      "dest": "/api/[...slug]"
+      "dest": "/api/[...slug]",
+      "headers": {
+        "host": ".*"
+      }
     }
   ]
 }
