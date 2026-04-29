@@ -5,7 +5,6 @@ export default async function handler(req, res) {
     return;
   }
 
-  // مسیر اصلی درخواست (req.url) خودکار توسط Vercel حفظ می‌شه
   const targetUrl = `https://${hostHeader}${req.url}`;
 
   try {
