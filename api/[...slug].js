@@ -1,26 +1,19 @@
 export default async function handler(req, res) {
-  const hostHeader = req.headers['host'];
-
-  // جلوگیری از حلقه: اگه درخواست برای خود پروکسی یا دامنه‌های ورسل باشه، ردش می‌کنیم.
-  if (!hostHeader || hostHeader.includes('vercel.app') || hostHeader.includes('vercel-proxy')) {
+  const host = req.headers.host;
+  if (!host || host.includes('vercel.app')) {
     return res.status(400).send('Missing or invalid Host header');
   }
-
+  const url = `https://${host}${req.url}`;
   try {
-    const targetUrl = `https://${hostHeader}${req.url}`;
-    const response = await fetch(targetUrl, {
+    const response = await fetch(url, {
       method: req.method,
-      headers: {
-        ...req.headers,
-        host: hostHeader,
-      },
+      headers: { ...req.headers, host },
       body: req.method !== 'GET' && req.method !== 'HEAD' ? JSON.stringify(req.body) : undefined,
       redirect: 'follow',
     });
-
     const body = await response.text();
     res.status(response.status).send(body);
-  } catch (error) {
-    res.status(500).send(`Proxy error: ${error.message}`);
+  } catch (e) {
+    res.status(500).send(`Proxy error: ${e.message}`);
   }
 }
