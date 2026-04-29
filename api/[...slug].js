@@ -1,10 +1,9 @@
 export default async function handler(req, res) {
   const hostHeader = req.headers['host'];
 
-  // اگر هدر Host خود پروژه ما باشد یا وجود نداشته باشد، درخواست را رد کن
-  if (!hostHeader || hostHeader.includes('vercel-proxy-rosy-xi.vercel.app')) {
-    res.status(400).send('Missing or invalid Host header');
-    return;
+  // جلوگیری از حلقه: اگه درخواست برای خود پروکسی یا دامنه‌های ورسل باشه، ردش می‌کنیم.
+  if (!hostHeader || hostHeader.includes('vercel.app') || hostHeader.includes('vercel-proxy')) {
+    return res.status(400).send('Missing or invalid Host header');
   }
 
   try {
